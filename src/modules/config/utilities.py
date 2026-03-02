@@ -5,7 +5,8 @@ import logging as log
 import configparser as cp
 import os
 
-class preflight_checks():
+class checks():
+    @staticmethod
     def search_known_paths() -> tuple[bool, str]:
         '''
         Look at predefined paths on the filesystem for a config file
@@ -34,6 +35,7 @@ class preflight_checks():
             log.error(f'error occured while searching for the config file: {err}')
             return False, ''
 
+    @staticmethod
     def verify_contents(config_path: str) -> tuple[bool, dict]:
         '''
         Check the existing config file for contents
@@ -53,10 +55,15 @@ class preflight_checks():
                 log.debug(f'checking integrity of section: {section}')
 
                 if len(config.items(section)) == 0:
-                    log.error('empty section, no keys or values')
-                    return False, {}
+                    log.warn('empty section, removing for runtime due to irrelevance')
+                    config.remove_section(section)
 
-            return True, dict(config.items())
+            config_dict = {}
+            for section in config.sections():
+                items = dict(config.items(section))
+                config_dict[section] = items
+
+            return True, config_dict
 
         except cp.ParsingError as err:
             log.error(f'error parsing the ini config file: {err}')
