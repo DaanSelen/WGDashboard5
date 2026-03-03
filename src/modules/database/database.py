@@ -15,8 +15,6 @@ class database():
         if not ok:
             return False, None, None
 
-        log.info(connection_string)
-
         try:
             engine = sqlalchemy.create_engine(connection_string, echo=False)
 
@@ -30,7 +28,7 @@ class database():
             return False, None, None
     
     @staticmethod
-    def verify_contents(engine) -> bool:
+    def ensure_contents(engine) -> bool:
         try:
             log.info('checking if all tables are present, and creating them if they are not')
 

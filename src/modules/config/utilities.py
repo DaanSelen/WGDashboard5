@@ -55,7 +55,7 @@ class checks():
                 log.debug(f'checking integrity of section: {section}')
 
                 if len(config.items(section)) == 0:
-                    log.warn('empty section, removing for runtime due to irrelevance')
+                    log.warn(f'empty section: {section}, removing at runtime due to irrelevance')
                     config.remove_section(section)
 
             config_dict = {}
