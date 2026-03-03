@@ -35,5 +35,3 @@ class utilities():
         except Exception as err:
             log.critical('failed to create directory')
             return False
-        
-        

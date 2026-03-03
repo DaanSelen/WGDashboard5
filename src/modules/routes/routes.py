@@ -13,7 +13,7 @@ def auth_required():
     if flask.request.method.lower() == "options":
         return make_resp_obj(True, "", flask.jsonify({"status": True}), 200)
 
-    ok, config_server = utilities.filter_config(flask.current_app.wgdashboard_config, 'SERVER')
+    ok, config_server = utilities.filter_config(flask.current_app.wgd_config, 'SERVER')
     if not ok:
         return make_resp_obj(False, "Internal Error", {}, 500)
 
