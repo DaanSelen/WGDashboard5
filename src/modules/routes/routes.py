@@ -85,21 +85,31 @@ def api_authenticate():
     
     return make_resp_obj("Authentication required", {}, 401)
 
-@routes.route("/", defaults={"path": ""})
-@routes.route("/<path:path>")
-def catch_all(path):
+@routes.route('/', defaults={'path': ''})
+@routes.route('/<path:path>')
+def index_handler(path):
     static_folder = flask.current_app.static_folder
     template_folder = flask.current_app.template_folder
 
-    file_path = os.path.join(static_folder, path)
-    if os.path.isfile(file_path):
-        return flask.send_from_directory(static_folder, path)
+    safe_path = os.path.normpath(path)
 
-    return flask.send_from_directory(template_folder, "index.html")
+    if safe_path.startswith('..'):
+        return make_resp_obj("Invalid request", {}, 400)
+
+    file_path = os.path.join(static_folder, safe_path)
+    if os.path.isfile(file_path):
+        return flask.send_from_directory(static_folder, safe_path)
+
+    return flask.send_from_directory(flask.current_app.static_folder, "index.html")
+
+@routes.route("/client")
+@routes.route("/clients")
+def client_handler():
+    return flask.send_from_directory(CLIENT_DIST, "client.html")
 
 @routes.route('/health', methods=["GET"])
 @routes.route('/healthz', methods=["GET"])
-def health():
+def health_handler():
     return make_resp_obj(
         "Health Endpoint",
         {"status": "ok"},
