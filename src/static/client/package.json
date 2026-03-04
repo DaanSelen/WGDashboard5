@@ -12,7 +12,7 @@
     "axios": "^1.9.0",
     "bootstrap": "^5.3.6",
     "bootstrap-icons": "^1.13.1",
-    "dayjs": "^1.11.13",
+    "dayjs": "^1.11.19",
     "oidc-client-ts": "^3.2.1",
     "pinia": "^3.0.2",
     "qrcode": "^1.5.4",
