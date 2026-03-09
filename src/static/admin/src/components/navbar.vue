@@ -57,7 +57,7 @@ export default {
 <template>
 	<div class="col-md-3 col-lg-2 d-md-block p-2 navbar-container bg-transparent"
 	     :class="{active: this.dashboardConfigurationStore.ShowNavBar}"
-	     :data-bs-theme="dashboardConfigurationStore.Configuration.Server.dashboard_theme"
+	     :data-bs-theme="dashboardConfigurationStore.Configuration.Server.wgdashboard_theme"
 	>
 		<nav id="sidebarMenu" class=" bg-body-tertiary sidebar border h-100 rounded-3 shadow overflow-y-scroll" >
 			<div class="sidebar-sticky ">

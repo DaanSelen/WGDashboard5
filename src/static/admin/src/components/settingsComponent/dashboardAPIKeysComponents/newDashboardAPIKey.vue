@@ -79,7 +79,7 @@ export default {
 						preview-format="yyyy-MM-dd HH:mm:ss"
 						:clearable="false"
 						:disabled="this.newKeyData.NeverExpire || this.submitting"
-						:dark="this.store.Configuration.Server.dashboard_theme === 'dark'"
+						:dark="this.store.Configuration.Server.wgdashboard_theme === 'dark'"
 					/>
 				</div>
 				<div class="form-check">

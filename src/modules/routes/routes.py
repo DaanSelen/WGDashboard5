@@ -2,10 +2,13 @@
 
 import logging as log
 
+import bcrypt
 import flask
+import hashlib
 import json
 import os
 import werkzeug
+from datetime import datetime
 
 from .response import make_resp_obj
 from .utilities import helpers
@@ -33,13 +36,13 @@ white_list = [
 ]
 
 @routes.before_request
-def auth_required():
+def authentication_required():
     if flask.request.method.lower() == "options":
-        return make_resp_obj("", {"status": True}, 200)
+        return make_resp_obj(True, "", {"status": True}, 200)
 
     ok, config_server = config.filter(flask.current_app.wgd_config, 'SERVER')
     if not ok:
-        return make_resp_obj("Internal error", {}, 500)
+        return make_resp_obj(False, "Internal error", {}, 500)
 
     auth_required_flag = config_server.get('auth_req', True)
     api_key_enabled = config_server.get("wgdashboard_apikey", False)
@@ -54,7 +57,7 @@ def auth_required():
         if helpers.is_valid_api_key(api_key):
             return
         else:
-            return make_resp_obj("WGDashboard API-key does not exist or is invalid/expired", {}, 401)
+            return make_resp_obj(False, "WGDashboard API-key does not exist or is invalid/expired", {}, 401)
 
     if flask.session.get("role") == "admin":
         return
@@ -62,59 +65,173 @@ def auth_required():
     if helpers.is_path_allowed(path, white_list, flask.session):
         return
 
-    return make_resp_obj("Unauthorized access", {}, 401)
+    return make_resp_obj(False, "Unauthorized access", {}, 401)
 
 @routes.route('/api/authenticate', methods=["POST"])
 def api_authenticate():
     ok, config_server = config.filter(flask.current_app.wgd_config, 'SERVER')
     if not ok:
-        return make_resp_obj("Internal error", {}, 500)
+        return make_resp_obj(False, "Internal error", {}, 500)
 
-    auth_required_flag = config_server.get('auth_req', True)
+    auth_required_flag = config_server.get('authentication_required', True)
 
+    # Authentication disabled
     if not auth_required_flag:
         ok, config_other = config.filter(flask.current_app.wgd_config, 'OTHER')
         if not ok:
-            return make_resp_obj("Internal error", {}, 500)
+            return make_resp_obj(False, "Internal error", {}, 500)
 
-        return make_resp_obj(
-            "Login successful, no authentication required",
-            {"welcome_session": config_other.get("welcome_session", False)},
-            200
-        )
+        return make_resp_obj(True, "Login successful, no authentication required", {"welcome_session": config_other.get("welcome_session", False)}, 200)
+
+    # API key authentication
+    api_key = flask.request.headers.get("wgdashboard-apikey")
+    api_key_enabled = config_server.get("wgdashboard_apikey", False)
+
+    if api_key and api_key_enabled:
+        if helpers.is_valid_api_key(api_key):
+            auth_token = hashlib.sha256(f"{api_key}{datetime.now()}".encode()).hexdigest()
+
+            flask.session['role'] = 'admin'
+            flask.session['username'] = auth_token
+
+            resp = make_resp_obj(True,"Login successful", {}, 200)
+            resp.set_cookie("authToken", auth_token)
+            flask.session.permanent = True
+            return resp
+        else:
+            return make_resp_obj(False, "API key invalid", {}, 401)
+
+    # Load account config
+    ok, config_account = config.filter(flask.current_app.wgd_config, 'ACCOUNT')
+    if not ok:
+        return make_resp_obj(False, "Internal error", {}, 500)
 
     data = flask.request.get_json()
     if not data:
-        return make_resp_obj("Invalid request body", {}, 400)
+        return make_resp_obj(False, "Invalid request body", {}, 400)
+
+    username = data.get("username")
+    password = data.get("password")
+    totp_code = data.get("totp")
+
+    stored_username = config_account.get("username")
+    stored_password = config_account.get("password")
+    totp_enabled = config_account.get("enable_totp", False)
+    totp_key = config_account.get("totp_key")
+
+    # Validate password
+    valid = bcrypt.checkpw(
+        password.encode("utf-8"),
+        stored_password.encode("utf-8")
+    )
+
+    # Validate TOTP
+    totp_valid = False
+    if totp_enabled:
+        totp_valid = pyotp.TOTP(totp_key).now() == totp_code
+
+    if (
+        valid
+        and username == stored_username
+        and ((totp_enabled and totp_valid) or not totp_enabled)
+    ):
+        # Generate a session token
+        auth_token = hashlib.sha256(f"{username}{datetime.now()}".encode()).hexdigest()
+
+        flask.session['role'] = 'admin'
+        flask.session['username'] = auth_token
+        flask.session.permanent = True
+
+        # Log success via your helper if available
+        log.info(f"Login success: {username} from {flask.request.remote_addr}")
+
+        ok, config_other = config.filter(flask.current_app.wgd_config, 'OTHER')
+        welcome_msg = config_other.get("welcome_session", "Welcome back!") if ok else "Welcome!"
+
+        resp = make_resp_obj(True, {"status": True}, 200)
+        resp.set_cookie("authToken", auth_token, httponly=True, samesite='Lax')
+        return resp
+
+    # Log failure
+    log.warning(f"Login failed: {username} from {flask.request.remote_addr}")
     
-    return make_resp_obj("Authentication required", {}, 401)
+    error_msg = "Invalid username, password, or OTP." if totp_enabled else "Invalid username or password."
+    return make_resp_obj(False, error_msg, {"status": False}, 401)
 
-@routes.route('/', defaults={'path': ''})
-@routes.route('/<path:path>')
-def index_handler(path):
-    static_folder = flask.current_app.static_folder
-    try:
-        safe_path = werkzeug.utils.safe_join(static_folder, path)
-        if not safe_path or not os.path.exists(safe_path):
-            raise Exception()
-        rel_path = os.path.relpath(safe_path, static_folder)
-        return flask.send_from_directory(flask.current_app.static_folder, rel_path)
+    if totp_enabled:
+        return make_resp_obj(
+            False,
+            "Sorry, your username, password or OTP is incorrect.",
+            {},
+            401
+        )
+    else:
+        return make_resp_obj(
+            False,
+            "Sorry, your username or password is incorrect.",
+            {},
+            401
+        )
 
-    except Exception:
-        print(f"ROUTE NOT INPLEMENTED: {path}")
-        return flask.send_from_directory(flask.current_app.static_folder, "index.html")
+@routes.route('/')
+def index_handler():
+        return flask.render_template("index.html")
 
 @routes.route('/api/locale')
 def api_locale_handler():
     locale_manager = localeman()
     locale_data = locale_manager.get_language()
 
-    return make_resp_obj("", locale_data, 200)
+    return make_resp_obj(True, "", locale_data, 200)
+
+@routes.route('/api/validateAuthentication')
+def api_validate_auth():
+    ok, config_server = config.filter(flask.current_app.wgd_config, 'SERVER')
+    if not ok:
+        return make_resp_obj(False, 'Internal error', {}, 500)
+
+    auth_required_flag = config_server.get('auth_req', True)
+    token = flask.request.cookies.get("authToken")
+
+    if auth_required_flag:
+        if token is None or token == "" or flask.session.get("username") != token:
+            return make_resp_obj(False, "Invalid authentication", {}, 200)
+    return make_resp_obj()
+
+@routes.route('/api/getDashboardVersion')
+def api_retrieve_dashboard_version():
+    ok, config_server = config.filter(flask.current_app.wgd_config, 'SERVER')
+    if not ok:
+        return make_resp_obj(False, 'Internal error', {}, 500)
+    
+    return make_resp_obj(True, "", config_server.get("version"))
+
+@routes.route('/api/getDashboardTheme')
+def api_retrieve_dashboard_theme():
+    ok, config_server = config.filter(flask.current_app.wgd_config, 'SERVER')
+    if not ok:
+        return make_resp_obj(False, 'Internal error', {}, 500)
+
+    return make_resp_obj(True, "", config_server.get("wgdashboard_theme"), 200)
+
+@routes.route('/api/getDashboardConfiguration')
+def api_retrieve_dashboard_config():
+    return make_resp_obj(data=flask.current_app.wgd_config)
+
+@routes.route('/api/isTotpEnabled')
+def api_totp_status():
+    ok, config_account = config.filter(flask.current_app.wgd_config, 'ACCOUNT')
+    if not ok:
+        return make_resp_obj(False, 'Internal error', {}, 500)
+
+    data = config_account.get('enable_totp') and config_account.get('totp_verified')
+    
+    return make_resp_obj(True, "", data, 200)
 
 @routes.route('/health', methods=["GET"])
 @routes.route('/healthz', methods=["GET"])
 def health_handler():
-    return make_resp_obj(
+    return make_resp_obj(True,
         "Health Endpoint",
         {"status": "ok"},
         200

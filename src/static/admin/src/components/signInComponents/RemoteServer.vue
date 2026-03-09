@@ -86,7 +86,7 @@ export default {
 		getHeaders(){
 			let headers = {
 				'Content-Type': 'application/json',
-				'wg-dashboard-apikey': this.server.apiKey
+				'wgdashboard-apikey': this.server.apiKey
 			}
 			if (this.server.headers){
 				for (let header of Object.values(this.server.headers)){

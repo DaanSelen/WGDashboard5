@@ -40,6 +40,7 @@ if __name__ == '__main__':
 
     # Configure the Flask app
     app = flask.Flask("WGDashboard",
+        static_url_path="",
         template_folder=os.path.abspath("./static/dist/WGDashboardAdmin"),
         static_folder=os.path.abspath("./static/dist/WGDashboardAdmin")
     )
@@ -57,6 +58,7 @@ if __name__ == '__main__':
     debug_enabled = config_server.get('debug_enabled', False)
     hostname = config_server.get('hostname', '0.0.0.0')
     port = config_server.get('port', '10086')
+
     app.run(
         debug=debug_enabled,
         host=hostname,

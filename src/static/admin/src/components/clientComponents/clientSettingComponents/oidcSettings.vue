@@ -52,7 +52,7 @@ const toggle = async () => {
 <!--	<div>-->
 <!--		<div class="alert alert-dark rounded-3 mb-0">-->
 <!--			<LocaleText t="Due to security reason, in order to edit OIDC configuration, you will need to edit "></LocaleText>-->
-<!--			<code>wg-dashboard-oidc-providers.json</code> <LocaleText t="directly, then restart WGDashboard to apply the latest settings."></LocaleText>-->
+<!--			<code>wgdashboard-oidc-providers.json</code> <LocaleText t="directly, then restart WGDashboard to apply the latest settings."></LocaleText>-->
 <!--		</div>-->
 <!--	</div>-->
 </div>

@@ -112,7 +112,7 @@ const uploadReady = computed(() => {
 												:read-only="true"
 												:display-language="true"
 												v-model="uploadFiles[t].content"
-												:theme="dashboardStore.Configuration.Server.dashboard_theme === 'dark' ? 'github-dark':'github'"
+												:theme="dashboardStore.Configuration.Server.wgdashboard_theme === 'dark' ? 'github-dark':'github'"
 												:languages="[[t, uploadFiles[t].filename]]"
 												width="100%" height="500px">
 											</CodeEditor>

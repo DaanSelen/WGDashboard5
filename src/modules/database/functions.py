@@ -9,6 +9,7 @@ from .schema import Base
 from .schema import Apikeys
 
 class functions():
+    @staticmethod
     def retrieve_api_keys(session: sqlalchemy.orm.Session) -> tuple[list[dict], list[dict]]:
         """ AI GENERATED
         Retrieve all API keys from the database and separate them into valid and expired keys.
@@ -60,3 +61,7 @@ class functions():
         print("INVALID", json.dumps(expired_keys, indent=4))
 
         return valid_keys, expired_keys
+
+    @staticmethod
+    def retrieve_users(session: sqlalchemy.orm.Session):
+        print("Wanting to check users")

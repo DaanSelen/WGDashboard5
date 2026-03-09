@@ -70,7 +70,7 @@ const saveRaw = async () => {
 							:disabled="true"
 							:read-only="saving"
 							v-model="content"
-							:theme="dashboardStore.Configuration.Server.dashboard_theme === 'dark' ? 'github-dark':'github'"
+							:theme="dashboardStore.Configuration.Server.wgdashboard_theme === 'dark' ? 'github-dark':'github'"
 							:languages="[['ini', path]]"
 							width="100%" height="600px">
 						</CodeEditor>

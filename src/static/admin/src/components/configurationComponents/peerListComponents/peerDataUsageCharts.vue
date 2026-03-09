@@ -80,7 +80,7 @@ const toggleFetchRealtimeTraffic = () => {
 	if (props.configurationInfo.Status){
 		fetchRealtimeTrafficInterval.value = setInterval(() => {
 			fetchRealtimeTraffic()
-		}, parseInt(dashboardStore.Configuration.Server.dashboard_refresh_interval))
+		}, parseInt(dashboardStore.Configuration.Server.wgdashboard_refresh_interval))
 	}
 }
 
@@ -92,7 +92,7 @@ watch(() => props.configurationInfo.Status, () => {
 	toggleFetchRealtimeTraffic()
 })
 
-watch(() => dashboardStore.Configuration.Server.dashboard_refresh_interval, () => {
+watch(() => dashboardStore.Configuration.Server.wgdashboard_refresh_interval, () => {
 	toggleFetchRealtimeTraffic()
 })
 

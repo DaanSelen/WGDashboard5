@@ -15,7 +15,7 @@ export default {
 	},
 	data(){
 		return {
-			value: this.store.Configuration.Server.dashboard_api_key,
+			value: this.store.Configuration.Server.wgdashboard_apikey,
 			apiKeys: [],
 			newDashboardAPIKey: false
 		}
@@ -24,7 +24,7 @@ export default {
 		async toggleDashboardAPIKeys(){
 			await fetchPost("/api/updateDashboardConfigurationItem", {
 				section: "Server",
-				key: "dashboard_api_key",
+				key: "wgdashboard_apikey",
 				value: this.value
 			}, (res) => {
 				if (res.status){
