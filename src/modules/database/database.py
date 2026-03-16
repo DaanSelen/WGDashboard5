@@ -6,12 +6,12 @@ import sqlalchemy
 import sqlalchemy.orm
 
 from .schema import Base
-from .utilities import checks
+from .database_utils import database_utils
 
 class database():
     @staticmethod
     def create_session(database_config: dict) -> tuple[bool, sqlalchemy.engine.Engine | None, sqlalchemy.orm.Session | None]:
-        ok, connection_string = checks.generate_connection_string(database_config)
+        ok, connection_string = database_utils.generate_connection_string(database_config)
         if not ok:
             return False, None, None
 

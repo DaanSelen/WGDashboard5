@@ -10,7 +10,7 @@ import {DashboardConfigurationStore} from "@/stores/DashboardConfigurationStore.
 
 const store = WireguardConfigurationsStore()
 const dashboardStore = DashboardConfigurationStore()
-const peerTrackingStatus = ref(dashboardStore.Configuration.WireGuardConfiguration.peer_tracking)
+const peerTrackingStatus = ref(dashboardStore.Configuration.wireguardconfiguration.peer_tracking)
 const loaded = ref(false)
 const trackingData = ref({})
 onMounted(async () => {

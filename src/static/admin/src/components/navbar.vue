@@ -27,7 +27,7 @@ export default {
 	computed: {
 		getActiveCrossServer(){
 			if (this.dashboardConfigurationStore.ActiveServerConfiguration){
-				return new URL(this.dashboardConfigurationStore.CrossServerConfiguration.ServerList
+				return new URL(this.dashboardConfigurationStore.CrossServerConfiguration.serverList
 					[this.dashboardConfigurationStore.ActiveServerConfiguration].host)
 			}
 			return undefined
@@ -57,7 +57,7 @@ export default {
 <template>
 	<div class="col-md-3 col-lg-2 d-md-block p-2 navbar-container bg-transparent"
 	     :class="{active: this.dashboardConfigurationStore.ShowNavBar}"
-	     :data-bs-theme="dashboardConfigurationStore.Configuration.Server.wgdashboard_theme"
+	     :data-bs-theme="dashboardConfigurationStore.Configuration.server.wgdashboard_theme"
 	>
 		<nav id="sidebarMenu" class=" bg-body-tertiary sidebar border h-100 rounded-3 shadow overflow-y-scroll" >
 			<div class="sidebar-sticky ">
@@ -152,12 +152,12 @@ export default {
 						<a :href="this.updateUrl" v-if="this.updateAvailable" class="text-decoration-none rounded-3" target="_blank">
 							<small class="nav-link text-muted rounded-3" >
 								<LocaleText :t="this.updateMessage"></LocaleText>
-								(<LocaleText t="Current Version:"></LocaleText> {{ dashboardConfigurationStore.Configuration.Server.version }})
+								(<LocaleText t="Current Version:"></LocaleText> {{ dashboardConfigurationStore.Configuration.server.version }})
 							</small>
 						</a>
 						<small class="nav-link text-muted rounded-3" v-else>
 							<LocaleText :t="this.updateMessage"></LocaleText>
-							({{ dashboardConfigurationStore.Configuration.Server.version }})
+							({{ dashboardConfigurationStore.Configuration.server.version }})
 						</small>
 					</li>
 				</ul>

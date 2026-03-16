@@ -186,7 +186,7 @@ export default {
 				}
 			}
 		},
-		'dashboardConfigurationStore.Configuration.Server.wgdashboard_refresh_interval'(){
+		'dashboardConfigurationStore.Configuration.server.wgdashboard_refresh_interval'(){
 			clearInterval(this.dashboardConfigurationStore.Peers.RefreshInterval);
 			this.setPeerInterval();
 		}
@@ -282,7 +282,7 @@ export default {
 		setPeerInterval(){
 			this.dashboardConfigurationStore.Peers.RefreshInterval = setInterval(() => {
 				this.getPeers()
-			}, parseInt(this.dashboardConfigurationStore.Configuration.Server.wgdashboard_refresh_interval))
+			}, parseInt(this.dashboardConfigurationStore.Configuration.server.wgdashboard_refresh_interval))
 		},
 	},
 	computed: {
@@ -405,14 +405,14 @@ export default {
 						x.allowed_ip.includes(this.wireguardConfigurationStore.searchString)
 				}) : this.configurationPeers;
 			
-			if (this.dashboardConfigurationStore.Configuration.Server.wgdashboard_sort === "restricted"){
+			if (this.dashboardConfigurationStore.Configuration.server.wgdashboard_sort === "restricted"){
 				return result.sort((a, b) => {
-					if ( a[this.dashboardConfigurationStore.Configuration.Server.wgdashboard_sort]
-						< b[this.dashboardConfigurationStore.Configuration.Server.wgdashboard_sort] ){
+					if ( a[this.dashboardConfigurationStore.Configuration.server.wgdashboard_sort]
+						< b[this.dashboardConfigurationStore.Configuration.server.wgdashboard_sort] ){
 						return 1;
 					}
-					if ( a[this.dashboardConfigurationStore.Configuration.Server.wgdashboard_sort]
-						> b[this.dashboardConfigurationStore.Configuration.Server.wgdashboard_sort]){
+					if ( a[this.dashboardConfigurationStore.Configuration.server.wgdashboard_sort]
+						> b[this.dashboardConfigurationStore.Configuration.server.wgdashboard_sort]){
 						return -1;
 					}
 					return 0;
@@ -420,12 +420,12 @@ export default {
 			}
 			
 			return result.sort((a, b) => {
-				if ( a[this.dashboardConfigurationStore.Configuration.Server.wgdashboard_sort]
-					< b[this.dashboardConfigurationStore.Configuration.Server.wgdashboard_sort] ){
+				if ( a[this.dashboardConfigurationStore.Configuration.server.wgdashboard_sort]
+					< b[this.dashboardConfigurationStore.Configuration.server.wgdashboard_sort] ){
 					return -1;
 				}
-				if ( a[this.dashboardConfigurationStore.Configuration.Server.wgdashboard_sort]
-					> b[this.dashboardConfigurationStore.Configuration.Server.wgdashboard_sort]){
+				if ( a[this.dashboardConfigurationStore.Configuration.server.wgdashboard_sort]
+					> b[this.dashboardConfigurationStore.Configuration.server.wgdashboard_sort]){
 					return 1;
 				}
 				return 0;

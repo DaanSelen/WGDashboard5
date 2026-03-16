@@ -41,19 +41,19 @@ export const DashboardConfigurationStore = defineStore('DashboardConfigurationSt
 			window.localStorage.setItem('CrossServerConfiguration', JSON.stringify(this.CrossServerConfiguration))
 		},
 		addCrossServerConfiguration(){
-			this.CrossServerConfiguration.ServerList[v4().toString()] = {
+			this.CrossServerConfiguration.serverList[v4().toString()] = {
                 host: "",
                 apiKey: "",
                 active: false
             }
 		},
 		deleteCrossServerConfiguration(key){
-			delete this.CrossServerConfiguration.ServerList[key];
+			delete this.CrossServerConfiguration.serverList[key];
 		},
 		getActiveCrossServer(){
 			const key = localStorage.getItem('ActiveCrossServerConfiguration');
 			if (key !== null){
-				return this.CrossServerConfiguration.ServerList[key]
+				return this.CrossServerConfiguration.serverList[key]
 			}
 			return undefined
 		},

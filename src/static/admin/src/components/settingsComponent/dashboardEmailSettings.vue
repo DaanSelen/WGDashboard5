@@ -13,7 +13,7 @@ onMounted(() => {
 			await fetchPost("/api/updateDashboardConfigurationItem", {
 				section: "Email",
 				key: id,
-				value: store.Configuration.Email[id]
+				value: store.Configuration.email[id]
 			}, (res) => {
 				if (res.status){
 					x.classList.remove('is-invalid')
@@ -74,7 +74,7 @@ const sendTestEmail = async () => {
 					<div class="col-12">
 						<div class="form-check mb-2 form-switch">
 							<input class="form-check-input" type="checkbox" role="switch"
-								   v-model="store.Configuration.Email.authentication_required"
+								   v-model="store.Configuration.email.authentication_required"
 								   id="authentication_required">
 							<label class="form-check-label" for="authentication_required">
 								<LocaleText t="Require SMTP Authentication"></LocaleText>
@@ -89,7 +89,7 @@ const sendTestEmail = async () => {
 								</small></strong>
 							</label>
 							<input id="server" 
-							       v-model="store.Configuration.Email.server"
+							       v-model="store.Configuration.email.server"
 							       type="text" class="form-control rounded-3">
 						</div>
 					</div>
@@ -101,7 +101,7 @@ const sendTestEmail = async () => {
 								</small></strong>
 							</label>
 							<input id="port"
-							       v-model="store.Configuration.Email.port"
+							       v-model="store.Configuration.email.port"
 							       type="text" class="form-control rounded-3">
 						</div>
 					</div>
@@ -113,7 +113,7 @@ const sendTestEmail = async () => {
 								</small></strong>
 							</label>
 							<select class="form-select rounded-3"
-							        v-model="store.Configuration.Email.encryption"
+							        v-model="store.Configuration.email.encryption"
 							        id="encryption">
 								<option value="IMPLICITTLS">
 									IMPLICIT TLS
@@ -127,7 +127,7 @@ const sendTestEmail = async () => {
 							</select>
 						</div>
 					</div>
-					<div class="col-12 col-lg-4" v-if="store.Configuration.Email.authentication_required">
+					<div class="col-12 col-lg-4" v-if="store.Configuration.email.authentication_required">
 						<div class="form-group">
 							<label for="username" class="text-muted mb-1">
 								<strong><small>
@@ -135,11 +135,11 @@ const sendTestEmail = async () => {
 								</small></strong>
 							</label>
 							<input id="username"
-							       v-model="store.Configuration.Email.username"
+							       v-model="store.Configuration.email.username"
 							       type="text" class="form-control rounded-3">
 						</div>
 					</div>
-					<div class="col-12 col-lg-4" v-if="store.Configuration.Email.authentication_required">
+					<div class="col-12 col-lg-4" v-if="store.Configuration.email.authentication_required">
 						<div class="form-group">
 							<label for="email_password" class="text-muted mb-1">
 								<strong><small>
@@ -147,7 +147,7 @@ const sendTestEmail = async () => {
 								</small></strong>
 							</label>
 							<input id="email_password"
-							       v-model="store.Configuration.Email.email_password"
+							       v-model="store.Configuration.email.email_password"
 							       type="password" class="form-control rounded-3">
 						</div>
 					</div>
@@ -160,7 +160,7 @@ const sendTestEmail = async () => {
 								</small></strong>
 							</label>
 							<input id="send_from"
-							       v-model="store.Configuration.Email.send_from"
+							       v-model="store.Configuration.email.send_from"
 							       type="text" class="form-control rounded-3">
 						</div>
 					</div>
@@ -201,7 +201,7 @@ const sendTestEmail = async () => {
 					</small>
 				</label>
 				<textarea class="form-control rounded-3 font-monospace"
-				          v-model="store.Configuration.Email.email_template"
+				          v-model="store.Configuration.email.email_template"
 				          id="email_template"
 				          style="min-height: 400px"></textarea>
 			</div>

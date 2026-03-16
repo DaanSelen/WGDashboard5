@@ -155,7 +155,7 @@ export default {
 										format="yyyy-MM-dd HH:mm:ss"
 										preview-format="yyyy-MM-dd HH:mm:ss"
 
-										:dark="this.store.Configuration.Server.wgdashboard_theme === 'dark'"
+										:dark="this.store.Configuration.server.wgdashboard_theme === 'dark'"
 									/>
 								</div>
 								<div class="d-flex gap-2 flex-column flex-sm-row">

@@ -18,7 +18,7 @@ export default {
 				value: value
 			}, (res) => {
 				if (res.status){
-					this.dashboardConfigurationStore.Configuration.Server.wgdashboard_theme = value;
+					this.dashboardConfigurationStore.Configuration.server.wgdashboard_theme = value;
 				}
 			});
 		}
@@ -36,13 +36,13 @@ export default {
 		<div class="d-flex gap-1">
 			<button class="btn bg-primary-subtle text-primary-emphasis flex-grow-1"
 			        @click="this.switchTheme('light')"
-			        :class="{active: this.dashboardConfigurationStore.Configuration.Server.wgdashboard_theme === 'light'}">
+			        :class="{active: this.dashboardConfigurationStore.Configuration.server.wgdashboard_theme === 'light'}">
 				<i class="bi bi-sun-fill me-2"></i>
 				<LocaleText t="Light"></LocaleText>
 			</button>
 			<button class="btn bg-primary-subtle text-primary-emphasis flex-grow-1"
 			        @click="this.switchTheme('dark')"
-			        :class="{active: this.dashboardConfigurationStore.Configuration.Server.wgdashboard_theme === 'dark'}">
+			        :class="{active: this.dashboardConfigurationStore.Configuration.server.wgdashboard_theme === 'dark'}">
 				<i class="bi bi-moon-fill me-2"></i>
 				<LocaleText t="Dark"></LocaleText>
 			</button>

@@ -11,7 +11,7 @@ import werkzeug
 from datetime import datetime
 
 from .response import make_resp_obj
-from .utilities import helpers
+from .routes_utils import routes_utils
 from .locale import localeman
 
 from ..database.functions import functions
@@ -20,19 +20,10 @@ from ..config.config import config
 routes = flask.Blueprint("routes", __name__)
 
 white_list = [
-    "/", # we need to whitelist /
-    "/client",
-    "/static/",
-    "/fileDownload",
-    "/api/authenticate",
-    "/api/locale",
-    "getDashboardConfiguration",
-    "getDashboardTheme",
-    "getDashboardVersion",
-    "sharePeer/get",
-    "isTotpEnabled",
-    "validateAuthentication",
-    "favicon.ico",
+    "/", "/client", "/static/", "/fileDownload",
+    "/api/authenticate", "/api/locale", "getDashboardConfiguration",
+    "getDashboardTheme", "getDashboardVersion", "sharePeer/get",
+    "isTotpEnabled", "validateAuthentication", "favicon.ico",
 ]
 
 @routes.before_request
@@ -42,6 +33,7 @@ def authentication_required():
 
     ok, config_server = config.filter(flask.current_app.wgd_config, 'SERVER')
     if not ok:
+        log.error("failed to filter the config in-memory")
         return make_resp_obj(False, "Internal error", {}, 500)
 
     auth_required_flag = config_server.get('auth_req', True)
@@ -54,7 +46,7 @@ def authentication_required():
     api_key = flask.request.headers.get("wgdashboard-apikey")
 
     if api_key and api_key_enabled:
-        if helpers.is_valid_api_key(api_key):
+        if routes_utils.is_valid_api_key(api_key):
             return
         else:
             return make_resp_obj(False, "WGDashboard API-key does not exist or is invalid/expired", {}, 401)
@@ -62,7 +54,7 @@ def authentication_required():
     if flask.session.get("role") == "admin":
         return
 
-    if helpers.is_path_allowed(path, white_list, flask.session):
+    if routes_utils.is_path_allowed(path, white_list, flask.session):
         return
 
     return make_resp_obj(False, "Unauthorized access", {}, 401)
@@ -71,6 +63,7 @@ def authentication_required():
 def api_authenticate():
     ok, config_server = config.filter(flask.current_app.wgd_config, 'SERVER')
     if not ok:
+        log.error("failed to filter the config in-memory")
         return make_resp_obj(False, "Internal error", {}, 500)
 
     auth_required_flag = config_server.get('authentication_required', True)
@@ -79,23 +72,25 @@ def api_authenticate():
     if not auth_required_flag:
         ok, config_other = config.filter(flask.current_app.wgd_config, 'OTHER')
         if not ok:
+            log.error("failed to filter the config in-memory")
             return make_resp_obj(False, "Internal error", {}, 500)
 
-        return make_resp_obj(True, "Login successful, no authentication required", {"welcome_session": config_other.get("welcome_session", False)}, 200)
+        welcome_session_enabled = config_other.get("welcome_session", False)
+        return make_resp_obj(True, "Login successful, no authentication required", {"welcome_session": welcome_session_enabled}, 200)
 
     # API key authentication
-    api_key = flask.request.headers.get("wgdashboard-apikey")
+    given_api_key = flask.request.headers.get("wgdashboard-apikey")
     api_key_enabled = config_server.get("wgdashboard_apikey", False)
 
-    if api_key and api_key_enabled:
-        if helpers.is_valid_api_key(api_key):
-            auth_token = hashlib.sha256(f"{api_key}{datetime.now()}".encode()).hexdigest()
+    if given_api_key and api_key_enabled:
+        if routes_utils.is_valid_api_key(given_api_key):
+            authentication_token = hashlib.sha256(f"{given_api_key}{datetime.now()}".encode()).hexdigest()
 
             flask.session['role'] = 'admin'
-            flask.session['username'] = auth_token
+            flask.session['username'] = authentication_token
 
             resp = make_resp_obj(True,"Login successful", {}, 200)
-            resp.set_cookie("authToken", auth_token)
+            resp.set_cookie("authToken", authentication_token)
             flask.session.permanent = True
             return resp
         else:
@@ -104,15 +99,19 @@ def api_authenticate():
     # Load account config
     ok, config_account = config.filter(flask.current_app.wgd_config, 'ACCOUNT')
     if not ok:
+        log.error("failed to filter the config in-memory")
         return make_resp_obj(False, "Internal error", {}, 500)
 
-    data = flask.request.get_json()
-    if not data:
+    req_data = flask.request.get_json()
+    if not req_data:
         return make_resp_obj(False, "Invalid request body", {}, 400)
 
-    username = data.get("username")
-    password = data.get("password")
-    totp_code = data.get("totp")
+    username = req_data.get("username")
+    password = req_data.get("password")
+    totp_code = req_data.get("totp")
+
+    #stored_user_objects = functions.retrieve_user_objects(flask.current_app.db_session)
+    #print(stored_user_objects)
 
     stored_username = config_account.get("username")
     stored_password = config_account.get("password")
@@ -136,10 +135,10 @@ def api_authenticate():
         and ((totp_enabled and totp_valid) or not totp_enabled)
     ):
         # Generate a session token
-        auth_token = hashlib.sha256(f"{username}{datetime.now()}".encode()).hexdigest()
+        authentication_token = hashlib.sha256(f"{username}{datetime.now()}".encode()).hexdigest()
 
         flask.session['role'] = 'admin'
-        flask.session['username'] = auth_token
+        flask.session['username'] = authentication_token
         flask.session.permanent = True
 
         # Log success via your helper if available
@@ -149,7 +148,7 @@ def api_authenticate():
         welcome_msg = config_other.get("welcome_session", "Welcome back!") if ok else "Welcome!"
 
         resp = make_resp_obj(True, {"status": True}, 200)
-        resp.set_cookie("authToken", auth_token, httponly=True, samesite='Lax')
+        resp.set_cookie("authToken", authentication_token, httponly=True, samesite='Lax')
         return resp
 
     # Log failure
@@ -188,6 +187,7 @@ def api_locale_handler():
 def api_validate_auth():
     ok, config_server = config.filter(flask.current_app.wgd_config, 'SERVER')
     if not ok:
+        log.error("failed to filter the config in-memory")
         return make_resp_obj(False, 'Internal error', {}, 500)
 
     auth_required_flag = config_server.get('auth_req', True)
@@ -202,6 +202,7 @@ def api_validate_auth():
 def api_retrieve_dashboard_version():
     ok, config_server = config.filter(flask.current_app.wgd_config, 'SERVER')
     if not ok:
+        log.error("failed to filter the config in-memory")
         return make_resp_obj(False, 'Internal error', {}, 500)
     
     return make_resp_obj(True, "", config_server.get("version"))
@@ -210,6 +211,7 @@ def api_retrieve_dashboard_version():
 def api_retrieve_dashboard_theme():
     ok, config_server = config.filter(flask.current_app.wgd_config, 'SERVER')
     if not ok:
+        log.error("failed to filter the config in-memory")
         return make_resp_obj(False, 'Internal error', {}, 500)
 
     return make_resp_obj(True, "", config_server.get("wgdashboard_theme"), 200)
@@ -222,6 +224,7 @@ def api_retrieve_dashboard_config():
 def api_totp_status():
     ok, config_account = config.filter(flask.current_app.wgd_config, 'ACCOUNT')
     if not ok:
+        log.error("failed to filter the config in-memory")
         return make_resp_obj(False, 'Internal error', {}, 500)
 
     data = config_account.get('enable_totp') and config_account.get('totp_verified')

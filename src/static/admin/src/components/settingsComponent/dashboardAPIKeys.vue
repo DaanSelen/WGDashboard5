@@ -15,7 +15,7 @@ export default {
 	},
 	data(){
 		return {
-			value: this.store.Configuration.Server.wgdashboard_apikey,
+			value: this.store.Configuration.server.wgdashboard_apikey,
 			apiKeys: [],
 			newDashboardAPIKey: false
 		}
@@ -28,11 +28,11 @@ export default {
 				value: this.value
 			}, (res) => {
 				if (res.status){
-					this.store.Configuration.Peers[this.targetData] = this.value;
+					this.store.Configuration.peers[this.targetData] = this.value;
 					this.store.newMessage("Server", 
 						`API Keys function is successfully ${this.value ? 'enabled':'disabled'}`, "success")
 				}else{
-					this.value = this.store.Configuration.Peers[this.targetData];
+					this.value = this.store.Configuration.peers[this.targetData];
 					this.store.newMessage("Server",
 						`API Keys function is failed to ${this.value ? 'enabled':'disabled'}`, "danger")
 				}

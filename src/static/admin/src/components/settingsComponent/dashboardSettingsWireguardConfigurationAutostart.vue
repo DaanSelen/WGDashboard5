@@ -6,7 +6,7 @@ import {WireguardConfigurationsStore} from "@/stores/WireguardConfigurationsStor
 import {fetchPost} from "@/utilities/fetch.js";
 const store = DashboardConfigurationStore()
 const wireguardConfigurationStore = WireguardConfigurationsStore()
-const data = ref(store.Configuration.WireGuardConfiguration.autostart)
+const data = ref(store.Configuration.wireguardconfiguration.autostart)
 
 const configurations = computed(() => {
 	return wireguardConfigurationStore.Configurations.map(x => x.Name)

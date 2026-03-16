@@ -6,7 +6,7 @@ import sqlalchemy.orm
 import json
 
 from .schema import Base
-from .schema import Apikeys
+from .schema import Apikeys, User
 
 class functions():
     @staticmethod
@@ -63,5 +63,8 @@ class functions():
         return valid_keys, expired_keys
 
     @staticmethod
-    def retrieve_users(session: sqlalchemy.orm.Session):
-        print("Wanting to check users")
+    def retrieve_user_objects(session: sqlalchemy.orm.Session) -> list[dict]:
+        stored_users = session.query(User).all()
+
+        for user in stored_users:
+            print(user)

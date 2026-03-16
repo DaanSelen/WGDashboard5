@@ -15,20 +15,21 @@ from modules.utilities.utilities import utilities as util
 from modules.utilities.logger import setup_logger
 
 from modules.routes.routes import routes
+from modules.routes.routes_welcome import routes_welcome
 
 if __name__ == '__main__':
     # Read the config file (ini)
-    ok, config_contents = config.read()
+    ok, config_data = config.read()
     if not ok:
         exit(1)
-    found, config_server = config.filter(config_contents, 'SERVER')
+    found, config_server = config.filter(config_data, 'SERVER')
 
     # Configure the loglevel of WGDashboard
     wanted_loglevel = config_server.get('log_level', 'DEBUG').upper()
     setup_logger(wanted_loglevel)
 
     # Get the database configuration from thee config
-    found, config_database = config.filter(config_contents, 'DATABASE')
+    found, config_database = config.filter(config_data, 'DATABASE')
     if not found:
         exit(1)
 
@@ -40,13 +41,14 @@ if __name__ == '__main__':
 
     # Configure the Flask app
     app = flask.Flask("WGDashboard",
-        static_url_path="",
+        static_url_path=prefix,
         template_folder=os.path.abspath("./static/dist/WGDashboardAdmin"),
         static_folder=os.path.abspath("./static/dist/WGDashboardAdmin")
     )
     app.register_blueprint(routes, url_prefix=prefix)
+    app.register_blueprint(routes_welcome, url_prefix=prefix)
 
-    app.wgd_config = config_contents
+    app.wgd_config = config_data
     app.locale_path = './static/locales/'
 
     app.secret_key = secrets.token_urlsafe(64)

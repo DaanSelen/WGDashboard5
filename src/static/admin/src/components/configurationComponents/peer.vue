@@ -50,7 +50,7 @@ export default {
 				<div
 					style="font-size: 0.8rem; color: #28a745"
 					class="d-flex align-items-center"
-					v-if="dashboardStore.Configuration.Server.wgdashboard_peer_list_display === 'list' && Peer.status === 'running'">
+					v-if="dashboardStore.Configuration.server.wgdashboard_peer_list_display === 'list' && Peer.status === 'running'">
 					<i class="bi bi-box-arrow-in-right me-2"></i>
 					<span>
 						{{ Peer.endpoint }}
@@ -84,8 +84,8 @@ export default {
 				{{Peer.name ? Peer.name : GetLocale('Untitled Peer')}}
 			</h6>
 			<div class="d-flex"
-			     :class="[dashboardStore.Configuration.Server.wgdashboard_peer_list_display === 'grid' ? 'gap-1 flex-column' : 'flex-row gap-3']">
-				<div :class="{'d-flex gap-2 align-items-center' : dashboardStore.Configuration.Server.wgdashboard_peer_list_display === 'list'}">
+			     :class="[dashboardStore.Configuration.server.wgdashboard_peer_list_display === 'grid' ? 'gap-1 flex-column' : 'flex-row gap-3']">
+				<div :class="{'d-flex gap-2 align-items-center' : dashboardStore.Configuration.server.wgdashboard_peer_list_display === 'list'}">
 					<small class="text-muted">
 						<LocaleText t="Public Key"></LocaleText>
 					</small>
@@ -93,7 +93,7 @@ export default {
 						<samp>{{Peer.id}}</samp>
 					</small>
 				</div>
-				<div :class="{'d-flex gap-2 align-items-center' : dashboardStore.Configuration.Server.wgdashboard_peer_list_display === 'list'}">
+				<div :class="{'d-flex gap-2 align-items-center' : dashboardStore.Configuration.server.wgdashboard_peer_list_display === 'list'}">
 					<small class="text-muted">
 						<LocaleText t="Allowed IPs"></LocaleText>
 					</small>
@@ -102,7 +102,7 @@ export default {
 					</small>
 				</div>
 				<div class="d-flex align-items-center gap-1"
-					:class="{'ms-auto': dashboardStore.Configuration.Server.wgdashboard_peer_list_display === 'list'}"
+					:class="{'ms-auto': dashboardStore.Configuration.server.wgdashboard_peer_list_display === 'list'}"
 				>
 					<PeerTagBadge :BackgroundColor="group.BackgroundColor" :GroupName="group.GroupName" :Icon="'bi-' + group.Icon"
 						v-for="group in Object.values(ConfigurationInfo.Info.PeerGroups).filter(x => x.Peers.includes(Peer.id))"

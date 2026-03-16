@@ -40,7 +40,7 @@ export default {
 						],
 						defaultContainer: "amnezia-awg",
 						description: this.selectedPeer.name,
-						hostName: this.dashboardStore.Configuration.Peers.remote_endpoint
+						hostName: this.dashboardStore.Configuration.peers.remote_endpoint
 					}
 					QRCode.toCanvas(
 						document.querySelector("#awg_vpn_qrcode"), btoa(JSON.stringify(awgQRCodeObject)), (error) => {

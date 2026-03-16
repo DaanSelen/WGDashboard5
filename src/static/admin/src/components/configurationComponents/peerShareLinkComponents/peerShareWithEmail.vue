@@ -14,7 +14,7 @@ await fetchGet("/api/email/ready", {}, (res) => {
 const store = DashboardConfigurationStore()
 const email = reactive({
 	Receiver: "",
-	Body: store.Configuration.Email.email_template,
+	Body: store.Configuration.email.email_template,
 	Subject: "",
 	IncludeAttachment: false,
 	ConfigurationName: props.selectedPeer.configuration.Name,

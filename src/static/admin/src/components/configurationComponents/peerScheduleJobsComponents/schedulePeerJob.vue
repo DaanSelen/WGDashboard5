@@ -151,7 +151,7 @@ export default {
 					:clearable="false"
 					:disabled="!edit"
 					v-if="this.job.Field === 'date'"
-					:dark="this.store.Configuration.Server.wgdashboard_theme === 'dark'"
+					:dark="this.store.Configuration.server.wgdashboard_theme === 'dark'"
 				/>
 				
 				<input class="form-control form-control-sm form-control-dark rounded-3 flex-grow-1" 

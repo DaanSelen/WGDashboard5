@@ -28,12 +28,12 @@ export default {
 	</div>
 	<div class="w-100 d-flex gap-3 flex-column p-3 border border-1 border-secondary-subtle rounded-3" 
 	     style="height: 400px; overflow-y: scroll">
-		<RemoteServer v-for="(server, key) in this.store.CrossServerConfiguration.ServerList"
+		<RemoteServer v-for="(server, key) in this.store.CrossServerConfiguration.serverList"
 		              @setActiveServer="this.store.setActiveCrossServer(key)"
 		              @delete="this.store.deleteCrossServerConfiguration(key)"
 		              :key="key"
 		              :server="server"></RemoteServer>
-		<h6 class="text-muted m-auto" v-if="Object.keys(this.store.CrossServerConfiguration.ServerList).length === 0">
+		<h6 class="text-muted m-auto" v-if="Object.keys(this.store.CrossServerConfiguration.serverList).length === 0">
 			<LocaleText t="Click"></LocaleText>
 			<i class="bi bi-plus-circle-fill mx-1"></i>
 			<LocaleText t="to add your server"></LocaleText>

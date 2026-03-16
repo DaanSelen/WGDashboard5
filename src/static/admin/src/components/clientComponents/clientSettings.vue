@@ -8,7 +8,7 @@ import { DashboardConfigurationStore } from "@/stores/DashboardConfigurationStor
 const dashboardConfigurationStore = DashboardConfigurationStore()
 const loading = ref(false)
 const values = reactive({
-	enableClients: dashboardConfigurationStore.Configuration.Clients.enable
+	enableClients: dashboardConfigurationStore.Configuration.clients.enable
 })
 
 const toggling = ref(false)
@@ -17,7 +17,7 @@ const updateSettings = async (key: string) => {
 	await fetchPost("/api/updateDashboardConfigurationItem", {
 		section: "Clients",
 		key: key,
-		value: dashboardConfigurationStore.Configuration.Clients[key]
+		value: dashboardConfigurationStore.Configuration.clients[key]
 	}, async (res) => {
 		await dashboardConfigurationStore.getConfiguration()
 		toggling.value = false
@@ -41,11 +41,11 @@ const updateSettings = async (key: string) => {
 				</h6>
 				<div class="form-check form-switch ms-auto">
 					<label class="form-check-label" for="oidc_switch">
-						<LocaleText :t="dashboardConfigurationStore.Configuration.Clients.enable ? 'Enabled':'Disabled'"></LocaleText>
+						<LocaleText :t="dashboardConfigurationStore.Configuration.clients.enable ? 'Enabled':'Disabled'"></LocaleText>
 					</label>
 					<input
 						:disabled="toggling"
-						v-model="dashboardConfigurationStore.Configuration.Clients.enable"
+						v-model="dashboardConfigurationStore.Configuration.clients.enable"
 						@change="updateSettings('enable')"
 						class="form-check-input" type="checkbox" role="switch" id="oidc_switch">
 				</div>
@@ -58,11 +58,11 @@ const updateSettings = async (key: string) => {
 					</h6>
 					<div class="form-check form-switch ms-auto">
 						<label class="form-check-label" for="sign_up_switch">
-							<LocaleText :t="dashboardConfigurationStore.Configuration.Clients.sign_up ? 'Enabled':'Disabled'"></LocaleText>
+							<LocaleText :t="dashboardConfigurationStore.Configuration.clients.sign_up ? 'Enabled':'Disabled'"></LocaleText>
 						</label>
 						<input
 							:disabled="toggling"
-							v-model="dashboardConfigurationStore.Configuration.Clients.sign_up"
+							v-model="dashboardConfigurationStore.Configuration.clients.sign_up"
 							@change="updateSettings('sign_up')"
 							class="form-check-input" type="checkbox" role="switch" id="sign_up_switch">
 					</div>

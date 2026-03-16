@@ -56,7 +56,7 @@ export default {
 
 <template>
 	<div class="container-fluid login-container-fluid d-flex main pt-5 overflow-scroll" 
-	     :data-bs-theme="this.store.Configuration.Server.wgdashboard_theme">
+	     :data-bs-theme="this.store.Configuration.server.wgdashboard_theme">
 		<div class="m-auto text-body" style="width: 500px">
 			<span class="dashboardLogo display-4">
 				<LocaleText t="Nice to meet you!"></LocaleText>

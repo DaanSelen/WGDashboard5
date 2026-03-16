@@ -28,7 +28,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.value = this.store.Configuration.Account[this.targetData];
+		this.value = this.store.Configuration.account[this.targetData];
 	},
 	methods:{
 		async useValidation(e){
@@ -43,7 +43,7 @@ export default {
 					if (res.status){
 						this.isValid = true;
 						this.showInvalidFeedback = false;
-						this.store.Configuration.Account[this.targetData] = this.value
+						this.store.Configuration.account[this.targetData] = this.value
 						clearTimeout(this.timeout)
 						this.timeout = setTimeout(() => this.isValid = false, 5000);
 					}else{

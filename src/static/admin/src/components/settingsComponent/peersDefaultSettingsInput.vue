@@ -29,7 +29,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.value = this.store.Configuration.Peers[this.targetData];
+		this.value = this.store.Configuration.peers[this.targetData];
 	},
 	methods:{
 		async useValidation(){
@@ -42,7 +42,7 @@ export default {
 					if (res.status){
 						this.isValid = true;
 						this.showInvalidFeedback = false;
-						this.store.Configuration.Peers[this.targetData] = this.value
+						this.store.Configuration.peers[this.targetData] = this.value
 						clearTimeout(this.timeout)
 						this.timeout = setTimeout(() => this.isValid = false, 5000);
 

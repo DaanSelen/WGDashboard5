@@ -29,8 +29,8 @@ export default {
 		}
 	},
 	mounted() {
-		this.app_ip = this.store.Configuration.Server.app_ip;
-		this.app_port = this.store.Configuration.Server.app_port;
+		this.app_ip = this.store.Configuration.server.app_ip;
+		this.app_port = this.store.Configuration.server.app_port;
 	},
 	methods:{
 		async useValidation(){
@@ -43,7 +43,7 @@ export default {
 					if (res.status){
 						this.isValid = true;
 						this.showInvalidFeedback = false;
-						this.store.Configuration.Account[this.targetData] = this.value
+						this.store.Configuration.account[this.targetData] = this.value
 						clearTimeout(this.timeout)
 						this.timeout = setTimeout(() => this.isValid = false, 5000);
 					}else{

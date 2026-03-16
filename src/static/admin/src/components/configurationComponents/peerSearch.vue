@@ -98,7 +98,7 @@ export default {
 					class="btn w-100 btn-sm text-primary-emphasis bg-primary-subtle rounded-3 border-1 border-primary-subtle  position-relative">
 					<i class="bi bi-sort-up me-2"></i>
 					<LocaleText t="Sort By"></LocaleText>
-					<span class="badge text-bg-primary ms-2">{{this.sort[store.Configuration.Server.wgdashboard_sort]}}</span>
+					<span class="badge text-bg-primary ms-2">{{this.sort[store.Configuration.server.wgdashboard_sort]}}</span>
 				</button>
 				<ul class="dropdown-menu rounded-3">
 					<li v-for="(value, key) in this.sort" >
@@ -108,7 +108,7 @@ export default {
 							</small>
 							<small class="ms-auto">
 								<i class="bi bi-check-circle-fill"
-								   v-if="store.Configuration.Server.wgdashboard_sort === key"></i>
+								   v-if="store.Configuration.server.wgdashboard_sort === key"></i>
 							</small>
 						</button>
 					</li>
@@ -120,7 +120,7 @@ export default {
 					class="btn btn-sm w-100 text-primary-emphasis bg-primary-subtle rounded-3 border-1 border-primary-subtle  position-relative">
 					<i class="bi bi-arrow-repeat me-2"></i>
 					<LocaleText t="Refresh Interval"></LocaleText>
-					<span class="badge text-bg-primary ms-2">{{this.interval[store.Configuration.Server.wgdashboard_refresh_interval]}}</span>
+					<span class="badge text-bg-primary ms-2">{{this.interval[store.Configuration.server.wgdashboard_refresh_interval]}}</span>
 				</button>
 				<ul class="dropdown-menu rounded-3">
 					<li v-for="(value, key) in this.interval" >
@@ -130,7 +130,7 @@ export default {
 							</small>
 							<small class="ms-auto">
 								<i class="bi bi-check-circle-fill"
-								   v-if="store.Configuration.Server.wgdashboard_refresh_interval === key"></i>
+								   v-if="store.Configuration.server.wgdashboard_refresh_interval === key"></i>
 							</small>
 						</button>
 					</li>
@@ -140,9 +140,9 @@ export default {
 				<button
 					data-bs-toggle="dropdown"
 					class="btn btn-sm w-100 text-primary-emphasis bg-primary-subtle rounded-3 border-1 border-primary-subtle  position-relative">
-					<i class="bi me-2" :class="'bi-' + store.Configuration.Server.wgdashboard_peer_list_display"></i>
+					<i class="bi me-2" :class="'bi-' + store.Configuration.server.wgdashboard_peer_list_display"></i>
 					<LocaleText t="Display"></LocaleText>
-					<span class="badge text-bg-primary ms-2">{{this.display[store.Configuration.Server.wgdashboard_peer_list_display]}}</span>
+					<span class="badge text-bg-primary ms-2">{{this.display[store.Configuration.server.wgdashboard_peer_list_display]}}</span>
 				</button>
 				<ul class="dropdown-menu rounded-3">
 					<li v-for="(value, key) in this.display" >
@@ -152,7 +152,7 @@ export default {
 							</small>
 							<small class="ms-auto">
 								<i class="bi bi-check-circle-fill"
-								   v-if="store.Configuration.Server.wgdashboard_peer_list_display === key"></i>
+								   v-if="store.Configuration.server.wgdashboard_peer_list_display === key"></i>
 							</small>
 						</button>
 					</li>

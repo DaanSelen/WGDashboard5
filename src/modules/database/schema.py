@@ -17,7 +17,7 @@ class User(Base):
 
     totp_enabled = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
     totp_verified = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
-    totp_key = sqlalchemy.Column(sqlalchemy.String)
+    totp_secret = sqlalchemy.Column(sqlalchemy.String)
 
     email = sqlalchemy.Column(sqlalchemy.String)
 
