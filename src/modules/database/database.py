@@ -13,6 +13,7 @@ class database():
     def create_session(database_config: dict) -> tuple[bool, sqlalchemy.engine.Engine | None, sqlalchemy.orm.Session | None]:
         ok, connection_string = database_utils.generate_connection_string(database_config)
         if not ok:
+            log.error("failed to generate the connection string")
             return False, None, None
 
         try:

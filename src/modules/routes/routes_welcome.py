@@ -67,7 +67,6 @@ def api_welcome_get_totp():
     if "totp_verified" not in config_account or not config_account["totp_verified"]:
         totp_key = pyotp.random_base32()
 
-        log.debug(totp_key)
         ok = config.update('ACCOUNT', 'totp_key', totp_key)
         if not ok:
             log.error("failed to update the key in the configuration file")

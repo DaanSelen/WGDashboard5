@@ -27,6 +27,7 @@ class localeman:
     def get_language(self):
         ok, server_config = config.filter(self.wgd_config, "SERVER")
         if not ok:
+            log.error("failed to filter the config in-memory")
             return None
 
         lang = server_config.get("wgdashboard_language", "en")

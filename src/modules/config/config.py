@@ -34,6 +34,7 @@ class config():
 
         ok, config_data = config_utils.read_data(candidate_path)
         if not ok:
+            log.error("failed to read data from filepath")
             return False, {}
 
         return True, config_data

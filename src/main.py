@@ -21,6 +21,7 @@ if __name__ == '__main__':
     # Read the config file (ini)
     ok, config_data = config.read()
     if not ok:
+        log.error("failed to read the config from disk")
         exit(1)
     found, config_server = config.filter(config_data, 'SERVER')
 
