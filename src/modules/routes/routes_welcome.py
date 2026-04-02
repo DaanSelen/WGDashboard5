@@ -18,7 +18,7 @@ from ..config.config import config
 
 routes_welcome = flask.Blueprint("routes_welcome", __name__)
 
-@routes_welcome.route('/api/Welcome_Finish', methods=["POST"])
+@routes_welcome.route('/api/welcome/Finish', methods=["POST"])
 def api_welcome_finish():
     ok, config_other = config.filter(flask.current_app.wgd_config, 'OTHER')
     if not ok:
@@ -57,7 +57,7 @@ def api_welcome_finish():
 
     return make_resp_obj()
 
-@routes_welcome.route('/api/Welcome_GetTotpLink')
+@routes_welcome.route('/api/welcome/totplink')
 def api_welcome_get_totp():
     ok, config_account = config.filter(flask.current_app.wgd_config, 'ACCOUNT')
     if not ok:
@@ -82,7 +82,7 @@ def api_welcome_get_totp():
 
     return make_resp_obj(False, 'Internal error', {}, 500)
 
-@routes_welcome.route('/api/Welcome_VerifyTotpLink', methods=["POST"])
+@routes_welcome.route('/api/welcome/verifytotplink', methods=["POST"])
 def api_welcome_verify_totp():
     ok, config_account = config.filter(flask.current_app.wgd_config, 'ACCOUNT')
     if not ok:

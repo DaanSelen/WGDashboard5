@@ -18,7 +18,7 @@ from ..database.functions import functions
 from ..config.config import config
 
 from ..utilities.utilities import utilities
-from ..utilities.system_status import system_status
+from ..utilities.statistics import statistics
 
 routes = flask.Blueprint("routes", __name__)
 
@@ -62,7 +62,11 @@ def authentication_required():
 
     return make_resp_obj(False, "Unauthorized access", {}, 401)
 
-@routes.route('/api/authenticate', methods=["POST"])
+@routes.route('/', methods=["GET"])
+def index_handler():
+        return flask.render_template("index.html")
+
+@routes.route('/api/auth', methods=["POST"])
 def api_authenticate():
     ok, config_server = config.filter(flask.current_app.wgd_config, 'SERVER')
     if not ok:
@@ -165,18 +169,7 @@ def api_authenticate():
     else:
         return make_resp_obj(False, "Sorry, your username or password is incorrect.", {}, 401)
 
-@routes.route('/')
-def index_handler():
-        return flask.render_template("index.html")
-
-@routes.route('/api/locale')
-def api_locale_handler():
-    locale_manager = localeman()
-    locale_data = locale_manager.get_language()
-
-    return make_resp_obj(True, "", locale_data, 200)
-
-@routes.route('/api/validateAuthentication')
+@routes.route('/api/auth/validate', methods=["GET"])
 def api_validate_auth():
     ok, config_server = config.filter(flask.current_app.wgd_config, 'SERVER')
     if not ok:
@@ -191,7 +184,14 @@ def api_validate_auth():
             return make_resp_obj(False, "Invalid authentication", {}, 200)
     return make_resp_obj()
 
-@routes.route('/api/getDashboardVersion')
+@routes.route('/api/dashboard/locale', methods=["GET"])
+def api_locale_handler():
+    locale_manager = localeman()
+    locale_data = locale_manager.get_language()
+
+    return make_resp_obj(True, "", locale_data, 200)
+
+@routes.route('/api/dashboard/version', methods=["GET"])
 def api_retrieve_dashboard_version():
     ok, config_server = config.filter(flask.current_app.wgd_config, 'SERVER')
     if not ok:
@@ -200,7 +200,7 @@ def api_retrieve_dashboard_version():
     
     return make_resp_obj(True, "", config_server.get("version"))
 
-@routes.route('/api/getDashboardTheme')
+@routes.route('/api/dashboard/theme', methods=["GET"])
 def api_retrieve_dashboard_theme():
     ok, config_server = config.filter(flask.current_app.wgd_config, 'SERVER')
     if not ok:
@@ -209,16 +209,16 @@ def api_retrieve_dashboard_theme():
 
     return make_resp_obj(True, "", config_server.get("wgdashboard_theme"), 200)
 
-@routes.route('/api/getDashboardUpdate')
+@routes.route('/api/dashboard/update', methods=["GET"])
 def api_retrieve_dashboard_update():
     utilities.update_available()
     return make_resp_obj()
 
-@routes.route('/api/getDashboardConfiguration')
+@routes.route('/api/dashboard/configuration', methods=["GET"])
 def api_retrieve_dashboard_config():
     return make_resp_obj(data=flask.current_app.wgd_config)
 
-@routes.route('/api/isTotpEnabled')
+@routes.route('/api/dashboard/totpenabled')
 def api_totp_status():
     ok, config_account = config.filter(flask.current_app.wgd_config, 'ACCOUNT')
     if not ok:
@@ -248,9 +248,9 @@ def api_retrieve_wireguard_configurations():
     
     return make_resp_obj(True, 'Wireguard', {}, 200)
 
-@routes.route('/api/systemStatus')
+@routes.route('/api/dashboard/statistics')
 def api_system_status():
-    status = system_status()
+    status = statistics()
     return make_resp_obj(True, "", status.to_json(), 200)
 
 @routes.route('/health', methods=["GET"])

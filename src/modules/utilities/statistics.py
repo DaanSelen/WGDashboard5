@@ -10,18 +10,18 @@ import psutil, shutil, subprocess, time
 from flask import current_app
 
 
-class system_status:
+class statistics:
     def to_json(self):
         return {
-            "CPU": self.get_cpu(),
-            "Memory": self.get_memory(),
-            "Disks": self.get_disks(),
-            "NetworkInterfaces": self.get_network(),
-            "NetworkInterfacesPriority": self.get_interface_priorities(),
-            "Processes": self.get_processes()
+            "CPU": self.retrieve_cpu_stats(),
+            "Memory": self.retrieve_memory_stats(),
+            "Disks": self.retrieve_disk_stats(),
+            "NetworkInterfaces": self.retrieve_network_stats(),
+            "NetworkInterfacesPriority": self.retrieve_interface_priorities(),
+            "Processes": self.retrieve_processes()
         }
 
-    def get_cpu(self):
+    def retrieve_cpu_stats(self):
         try:
             return {
                 "cpu_percent": psutil.cpu_percent(interval=1),
@@ -31,7 +31,7 @@ class system_status:
             current_app.logger.error("CPU error %s", e)
             return {}
 
-    def get_memory(self):
+    def retrieve_memory_stats(self):
         try:
             v = psutil.virtual_memory()
             s = psutil.swap_memory()
@@ -52,7 +52,7 @@ class system_status:
             current_app.logger.error("Memory error %s", e)
             return {}
 
-    def get_disks(self):
+    def retrieve_disk_stats(self):
         disks = []
         try:
             for p in psutil.disk_partitions():
@@ -70,7 +70,7 @@ class system_status:
 
         return disks
 
-    def get_network(self):
+    def retrieve_network_stats(self):
         try:
             first = psutil.net_io_counters(pernic=True)
             time.sleep(1)
@@ -96,7 +96,7 @@ class system_status:
             current_app.logger.error("Network error %s", e)
             return {}
 
-    def get_interface_priorities(self):
+    def retrieve_interface_priorities(self):
         try:
             if not shutil.which("ip"):
                 return {}
@@ -119,7 +119,7 @@ class system_status:
             current_app.logger.error("Interface priority error %s", e)
             return {}
 
-    def get_processes(self):
+    def retrieve_processes(self):
         cpu_list = []
         mem_list = []
 
